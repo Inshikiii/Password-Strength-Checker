@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Secure Account</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <!-- Back Button -->
+        <a href="/" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Back</span>
+        </a>
+
+        <div class="registration-box">
+            <!-- Header -->
+            <div class="header">
+                <div class="shield-icon">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" 
+                              stroke="#00ff88" 
+                              stroke-width="1.5" 
+                              stroke-linecap="round" 
+                              stroke-linejoin="round"
+                              fill="none"/>
+                    </svg>
+                </div>
+                <h1>Create Secure Account</h1>
+                <p class="subtitle">Your credentials are protected with industry-standard encryption</p>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2>Registration</h2>
+                <p class="form-subtitle">All fields are required. Password must meet minimum strength criteria.</p>
+                
+                <form id="registrationForm">
+                    <!-- CSRF Token (Hidden Field for Security) -->
+                    <input type="hidden" id="csrfToken" name="csrf_token" value="{{ csrf_token }}">
+                    
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Username
+                        </label>
+                        <input type="text" id="username" name="username" placeholder="Enter username (3-20 characters)" required>
+                        <span id="usernameStatus" class="status-message"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Email Address
+                        </label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                        <span id="emailStatus" class="status-message"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Password
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                            <button type="button" class="toggle-btn" onclick="togglePassword('password')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Password Strength Indicator -->
+                        <div class="strength-indicator">
+                            <div class="strength-header">
+                                <span>Password Strength</span>
+                                <span id="strengthText" class="strength-value">-</span>
+                            </div>
+                            <div class="strength-bar">
+                                <div id="strengthBar" class="strength-fill"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Password Feedback -->
+                        <div id="passwordFeedback" class="feedback-list"></div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Confirm Password
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+                            <button type="button" class="toggle-btn" onclick="togglePassword('confirmPassword')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span id="confirmStatus" class="status-message"></span>
+                    </div>
+
+                    <!-- Message Box -->
+                    <div id="messageBox" class="message-box"></div>
+
+                    <!-- Submit Button with Loading Spinner -->
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Send Verification Code</span>
+                        <span class="btn-loader" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+                            </svg>
+                            Sending...
+                        </span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Security Policy -->
+            <div class="security-policy">
+                <h3>SECURITY POLICY</h3>
+                <ul>
+                    <li>Passwords hashed using bcrypt before storage</li>
+                    <li>Minimum password strength: "Medium" (score ≥ 3/6)</li>
+                    <li>Email OTP verification (5 minutes validity)</li>
+                    <li>Server-side session storage (in-memory)</li>
+                    <li>Session timeout after 30 minutes of inactivity</li>
+                    <li>CAPTCHA verification required for registration</li>
+                    <li>Account lockout after 3 failed CAPTCHA attempts (15 sec)</li>
+                    <li>Username sanitization to prevent injection attacks</li>
+                    <li>CSRF protection on all form submissions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

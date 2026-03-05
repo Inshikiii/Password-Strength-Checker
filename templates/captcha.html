@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    <div class="container">
+        <a href="/register" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Back</span>
+        </a>
+        <div class="registration-box">
+            <div class="header">
+                <div class="shield-icon">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="#00ff88" stroke-width="1.5" fill="none"/></svg>
+                </div>
+                <h1>Verify Your Account</h1>
+                <p class="subtitle">Complete the security verification to create your account</p>
+            </div>
+            <div class="form-section">
+                <h2>Security Verification</h2>
+                <p class="form-subtitle">Enter the characters shown in the image below.</p>
+                
+                {% if locked_out %}
+                <div class="message-box error" style="display: block;">
+                    <strong>⚠ Account Temporarily Locked</strong><br>
+                    Too many failed CAPTCHA attempts. Please wait <span id="lockoutTimer">{{ remaining_seconds }}</span> seconds before trying again.
+                </div>
+                <script>
+                    (function() {
+                        let remaining = parseInt('{{ remaining_seconds }}', 10);
+                        const timer = setInterval(() => {
+                            remaining--;
+                            document.getElementById('lockoutTimer').textContent = remaining;
+                            if (remaining <= 0) {
+                                clearInterval(timer);
+                                window.location.reload();
+                            }
+                        }, 1000);
+                    })();
+                </script>
+                {% else %}
+                <form id="verificationForm">
+                    <!-- CSRF Token (Hidden Field for Security) -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    
+                    <div class="form-group">
+                        <label>Image CAPTCHA</label>
+                        <div class="captcha-image-container">
+                            <img id="captchaImage" src="/captcha_image" alt="CAPTCHA" class="captcha-image">
+                            <button type="button" class="refresh-captcha" onclick="refreshCaptcha()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <input type="text" id="captchaInput" name="captcha" placeholder="Enter the characters above" required autocomplete="off">
+                    </div>
+                    <div id="messageBox" class="message-box"></div>
+                    <button type="submit" class="submit-btn" id="verifyBtn">
+                        <span class="btn-text">Complete Registration</span>
+                        <span class="btn-loader" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+                            </svg>
+                            Processing...
+                        </span>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="security-policy">
+                <h3>SECURITY POLICY</h3>
+                <ul>
+                    <li>Passwords hashed using bcrypt before storage</li>
+                    <li>Minimum password strength: "Medium" (score ≥ 3/6)</li>
+                    <li>Email OTP verification (5 minutes validity)</li>
+                    <li>Server-side session storage (in-memory)</li>
+                    <li>Session timeout after 30 minutes of inactivity</li>
+                    <li>CAPTCHA verification required for registration</li>
+                    <li>Account lockout after 3 failed CAPTCHA attempts (15 sec)</li>
+                    <li>Username sanitization to prevent injection attacks</li>
+                    <li>CSRF protection on all form submissions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='captcha.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Registration System - Welcome</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+    <!-- Animated background -->
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <!-- Shield icon with glow -->
+        <div class="shield-icon">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" 
+                      stroke="#00ff88" 
+                      stroke-width="1.5" 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round"
+                      fill="none"/>
+            </svg>
+        </div>
+        
+        <!-- Main heading -->
+        <h1 class="main-title">Secure Registration System</h1>
+        
+        <!-- Description -->
+        <p class="description">
+            A prototype demonstrating cybersecurity<br>
+            principles in user registration — password<br>
+            strength analysis, CAPTCHA verification, and<br>
+            secure system design.
+        </p>
+        
+        <!-- Feature cards -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="11" width="14" height="10" rx="2" stroke="#00ff88" stroke-width="1.5"/>
+                        <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Password Strength</h3>
+                <p class="feature-desc">
+                    Real-time entropy<br>
+                    analysis & pattern<br>
+                    detection
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="#00ff88" stroke-width="1.5"/>
+                        <path d="M9 12L11 14L15 10" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">CAPTCHA Verification</h3>
+                <p class="feature-desc">
+                    Math-based human<br>
+                    verification with<br>
+                    rate limiting
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7Z" stroke="#00ff88" stroke-width="1.5"/>
+                        <path d="M12 14C8.68629 14 6 16.6863 6 20H18C18 16.6863 15.3137 14 12 14Z" stroke="#00ff88" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">bcrypt Hashing</h3>
+                <p class="feature-desc">
+                    Secure password<br>
+                    hashing with<br>
+                    automatic salting
+                </p>
+            </div>
+        </div>
+        
+        <!-- Begin button -->
+        <a href="/register" class="begin-btn">
+            <span>Begin Registration</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
+    
+    <script>
+        // Professional Matrix-style animated background
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = document.documentElement.scrollWidth;
+            canvas.height = document.documentElement.scrollHeight;
+        }
+        
+        resizeCanvas();
+        
+        const chars = '01';
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = [];
+        
+        // Initialize drops with random starting positions
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+        
+        function drawMatrix() {
+            // Semi-transparent black to create fade effect
+            ctx.fillStyle = 'rgba(10, 14, 27, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Gradient effect for characters
+            for (let i = 0; i < drops.length; i++) {
+                // Vary opacity for depth effect
+                const opacity = Math.random() * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(0, 255, 136, ${opacity})`;
+                ctx.font = fontSize + 'px Consolas, monospace';
+                
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                ctx.fillText(text, x, y);
+                
+                // Add glow effect to some characters
+                if (Math.random() > 0.98) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#00ff88';
+                    ctx.fillText(text, x, y);
+                    ctx.shadowBlur = 0;
+                }
+                
+                // Reset drop to top with random delay
+                if (y > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                
+                // Vary speed for more dynamic effect
+                drops[i] += Math.random() * 0.5 + 0.5;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const oldColumns = columns;
+                resizeCanvas();
+                columns = Math.floor(canvas.width / fontSize);
+                
+                // Preserve existing drops and add/remove as needed
+                if (columns > oldColumns) {
+                    // Add new columns
+                    for (let i = oldColumns; i < columns; i++) {
+                        drops[i] = Math.random() * canvas.height / fontSize;
+                    }
+                } else if (columns < oldColumns) {
+                    // Remove excess columns
+                    drops = drops.slice(0, columns);
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

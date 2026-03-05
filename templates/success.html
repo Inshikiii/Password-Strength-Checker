@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Created Successfully</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <div class="success-page">
+            <div class="success-header">
+                <div class="success-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="#00ff88" stroke-width="2"/>
+                        <path d="M8 12L11 15L16 9" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1>Account Created Successfully</h1>
+                <p class="welcome-text">Welcome, <span class="username-highlight">{{ username }}</span>. Your account is secured.</p>
+                <div class="session-timer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Session expires in: <span id="countdown">15:00</span></span>
+                </div>
+            </div>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="card-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                        <h3>Security Summary</h3>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="info-row">
+                            <span class="info-label">Password Strength</span>
+                            <span class="info-value highlight">{{ password_strength }}</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Entropy</span>
+                            <span class="info-value">{{ entropy }} bits</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">Encryption</span>
+                            <span class="info-value">bcrypt</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">CAPTCHA Attempts</span>
+                            <span class="info-value">1</span>
+                        </div>
+                        
+                        <div class="hash-section">
+                            <div class="info-label">Password Hash (truncated)</div>
+                            <div class="hash-value" id="hashValue">{{ password_hash }}</div>
+                            <button class="copy-btn" onclick="copyHash(event)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" stroke-width="2"/>
+                                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke-width="2"/>
+                                </svg>
+                                <span class="copy-text">Copy Hash</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="card-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#00ff88" stroke-width="2"/>
+                            <polyline points="14 2 14 8 20 8" stroke="#00ff88" stroke-width="2"/>
+                        </svg>
+                        <h3>Account Policies</h3>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="policy-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="#00ff88" stroke-width="2"/>
+                            </svg>
+                            <span>Password expires every 90 days</span>
+                        </div>
+                        
+                        <div class="policy-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <rect x="5" y="11" width="14" height="10" rx="2" stroke="#00ff88" stroke-width="2"/>
+                                <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="#00ff88" stroke-width="2"/>
+                            </svg>
+                            <span>Last 5 passwords cannot be reused</span>
+                        </div>
+                        
+                        <div class="policy-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="#00ff88" stroke-width="2"/>
+                                <path d="M9 12L11 14L15 10" stroke="#00ff88" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Minimum strength: Good (40/100)</span>
+                        </div>
+                        
+                        <div class="policy-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="#ffa500" stroke-width="2"/>
+                                <line x1="12" y1="9" x2="12" y2="13" stroke="#ffa500" stroke-width="2"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17" stroke="#ffa500" stroke-width="2"/>
+                            </svg>
+                            <span>5 failed logins triggers account lock</span>
+                        </div>
+                        
+                        <div class="policy-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="#00ff88" stroke-width="2"/>
+                                <path d="M12 6v6l4 2" stroke="#00ff88" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Sessions timeout after 15 min inactivity</span>
+                        </div>
+                        
+                        <div class="note-section">
+                            <strong>Note:</strong> Passwords are hashed server-side using bcrypt with automatic salting. This ensures security even if the database is compromised.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="signout-btn" onclick="window.location.href='/'">
+                Sign Out (Clear Session)
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Professional Matrix background
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = document.documentElement.scrollWidth;
+            canvas.height = document.documentElement.scrollHeight;
+        }
+        
+        resizeCanvas();
+        
+        const chars = '01';
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = [];
+        
+        // Initialize drops with random starting positions
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+        
+        function drawMatrix() {
+            // Semi-transparent black to create fade effect
+            ctx.fillStyle = 'rgba(10, 14, 27, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Gradient effect for characters
+            for (let i = 0; i < drops.length; i++) {
+                // Vary opacity for depth effect
+                const opacity = Math.random() * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(0, 255, 136, ${opacity})`;
+                ctx.font = fontSize + 'px Consolas, monospace';
+                
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                ctx.fillText(text, x, y);
+                
+                // Add glow effect to some characters
+                if (Math.random() > 0.98) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#00ff88';
+                    ctx.fillText(text, x, y);
+                    ctx.shadowBlur = 0;
+                }
+                
+                // Reset drop to top with random delay
+                if (y > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                
+                // Vary speed for more dynamic effect
+                drops[i] += Math.random() * 0.5 + 0.5;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const oldColumns = columns;
+                resizeCanvas();
+                columns = Math.floor(canvas.width / fontSize);
+                
+                // Preserve existing drops and add/remove as needed
+                if (columns > oldColumns) {
+                    // Add new columns
+                    for (let i = oldColumns; i < columns; i++) {
+                        drops[i] = Math.random() * canvas.height / fontSize;
+                    }
+                } else if (columns < oldColumns) {
+                    // Remove excess columns
+                    drops = drops.slice(0, columns);
+                }
+            }, 100);
+        });
+        
+        // Countdown timer with warning
+        let timeLeft = 15 * 60; // 15 minutes in seconds
+        const countdownEl = document.getElementById('countdown');
+        let warningShown = false;
+        
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Show warning at 1 minute remaining
+            if (timeLeft === 60 && !warningShown) {
+                showTimeoutWarning();
+                warningShown = true;
+            }
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                window.location.href = '/';
+            }
+        }
+        
+        setInterval(updateCountdown, 1000);
+        
+        // Session timeout warning
+        function showTimeoutWarning() {
+            const warning = document.createElement('div');
+            warning.className = 'timeout-warning show';
+            warning.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span><strong>Session Expiring Soon!</strong><br>Your session will expire in 1 minute.</span>
+                </div>
+            `;
+            document.body.appendChild(warning);
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                warning.classList.remove('show');
+                setTimeout(() => warning.remove(), 300);
+            }, 10000);
+        }
+        
+        // Copy hash function
+        function copyHash(event) {
+            const hashValue = document.getElementById('hashValue').textContent;
+            navigator.clipboard.writeText(hashValue).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.querySelector('.copy-text').textContent;
+                btn.querySelector('.copy-text').textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.querySelector('.copy-text').textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy hash to clipboard');
+            });
+        }
+    </script>
+</body>
+</html>

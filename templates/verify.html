@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="container">
+        <a href="/register" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Back</span>
+        </a>
+
+        <div class="registration-box">
+            <div class="header">
+                <div class="shield-icon">
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#00ff88" stroke-width="1.5"/>
+                        <polyline points="22,6 12,13 2,6" stroke="#00ff88" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <h1>Email Verification</h1>
+                <p class="subtitle">We've sent a 6-digit code to {{ masked_email }}</p>
+            </div>
+
+            <div class="form-section">
+                <h2>Enter Verification Code</h2>
+                <p class="form-subtitle">Check your email inbox (and spam folder) for the code</p>
+                
+                <form id="verifyForm">
+                    <input type="hidden" id="csrfToken" name="csrf_token" value="{{ csrf_token }}">
+                    
+                    <div class="form-group">
+                        <label>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L4 6V12C4 16.55 7.16 20.74 12 22C16.84 20.74 20 16.55 20 12V6L12 2Z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            6-Digit Code
+                        </label>
+                        <input type="text" id="otpInput" name="otp" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required autocomplete="off">
+                        <span id="otpStatus" class="status-message"></span>
+                    </div>
+
+                    <div id="messageBox" class="message-box"></div>
+
+                    <button type="submit" class="submit-btn" id="verifyBtn">
+                        <span class="btn-text">Verify Email</span>
+                        <span class="btn-loader" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+                            </svg>
+                            Verifying...
+                        </span>
+                    </button>
+
+                    <button type="button" class="resend-btn" id="resendBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Resend Code
+                    </button>
+                </form>
+            </div>
+
+            <div class="security-policy">
+                <h3>VERIFICATION INFO</h3>
+                <ul>
+                    <li>Code expires in 5 minutes</li>
+                    <li>Maximum 3 attempts allowed</li>
+                    <li>Check spam folder if not received</li>
+                    <li>Click "Resend Code" to get a new one</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='verify.js') }}"></script>
+</body>
+</html>
