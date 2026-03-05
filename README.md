@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \# Password Strength Checker
 
 
@@ -42,3 +43,6 @@ It analyzes user passwords and evaluates their strength based on multiple securi
 
 Nirnaya Shrestha
 
+=======
+# Password-Strength-Checker
+>>>>>>> 159e491f999c4ec4a8e12c9f5dfbffb236ab00a4
